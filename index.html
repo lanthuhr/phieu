@@ -59,6 +59,14 @@ textarea{min-height:88px;resize:vertical}
 .matrix .row .c label.selected{border-color:var(--xanh);background:var(--nen-nhat)}
 .matrix .row .c input{accent-color:var(--navy)}
 .hidden{display:none!important}
+/* ba bước */
+.steps{display:flex;gap:6px;margin-bottom:14px}
+.steps .st{flex:1;text-align:center;font-size:11.5px;color:var(--chu-mo);padding-bottom:7px;border-bottom:3px solid var(--vien);line-height:1.3}
+.steps .st.on{color:var(--navy);font-weight:700;border-bottom-color:var(--navy)}
+.steps .st.done{color:var(--navy);border-bottom-color:var(--xanh)}
+.nav{display:flex;gap:10px;margin-top:4px}
+.btn-back{flex:0 0 auto;background:var(--be-mat);color:var(--navy);border:1.5px solid var(--vien);border-radius:11px;padding:15px 20px;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.btn-back:hover{border-color:var(--navy)}
 .err{background:#fdecec;border:1.5px solid var(--nguy-cap);color:#8a1f1f;border-radius:10px;padding:11px 14px;font-size:14px;margin-bottom:14px}
 .btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:11px;padding:15px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:background .15s}
 .btn:hover{background:var(--navy-dam)}
@@ -79,7 +87,14 @@ textarea{min-height:88px;resize:vertical}
   </header>
 
   <div id="form-wrap">
-    <!-- LỜI MỞ ĐẦU -->
+    <div class="steps" id="steps">
+      <div class="st on" data-s="1">1 · Đôi lời chia sẻ</div>
+      <div class="st" data-s="2">2 · Thông tin</div>
+      <div class="st" data-s="3">3 · Chia sẻ</div>
+    </div>
+
+    <!-- BƯỚC 1 — LỜI MỞ ĐẦU -->
+    <div id="step1">
     <section class="card intro">
       <h1>Đôi lời chia sẻ với anh/chị/em trước khi bắt đầu</h1>
       <p>Cảm ơn anh/chị/em đã đồng hành cùng 30Shine trong thời gian qua. Dù mỗi người có một lựa chọn riêng, những trải nghiệm và góp ý của anh/chị/em vẫn rất quý với 30Shine.</p>
@@ -89,10 +104,12 @@ textarea{min-height:88px;resize:vertical}
       <p>Cánh cửa 30Shine luôn mở — rất mong có ngày được đón anh/chị/em quay lại!</p>
       <span class="time-est">14 câu · khoảng 4 phút</span>
     </section>
+    <button class="btn" onclick="goStep(2)">Bắt đầu</button>
+    </div>
 
+    <!-- BƯỚC 2 — THÔNG TIN -->
+    <div id="step2" class="hidden">
     <div class="progress"><div class="bar"><div class="fill" id="pfill"></div></div><div class="txt" id="ptxt">0/16 mục bắt buộc</div></div>
-
-    <!-- THÔNG TIN -->
     <section class="card">
       <div class="sec-title">Thông tin của anh/chị/em</div>
       <div id="prefill-note" class="note-prefill hidden">Thông tin dưới đây do hệ thống điền sẵn. Nếu sai, anh/chị/em sửa lại giúp.</div>
@@ -106,8 +123,16 @@ textarea{min-height:88px;resize:vertical}
         <div class="opts" id="A3"></div>
       </div>
     </section>
+    <div id="err-box2" class="err hidden"></div>
+    <div class="nav">
+      <button class="btn-back" onclick="goStep(1)">Quay lại</button>
+      <button class="btn" onclick="goStep(3)">Tiếp tục</button>
+    </div>
+    </div>
 
-    <!-- CÂU HỎI -->
+    <!-- BƯỚC 3 — CHIA SẺ -->
+    <div id="step3" class="hidden">
+    <div class="progress"><div class="bar"><div class="fill" id="pfill3"></div></div><div class="txt" id="ptxt3">0/16 mục bắt buộc</div></div>
     <section class="card">
       <div class="sec-title">Chia sẻ của anh/chị/em</div>
 
@@ -199,7 +224,11 @@ textarea{min-height:88px;resize:vertical}
     </section>
 
     <div id="err-box" class="err hidden"></div>
-    <button class="btn" id="submit-btn" onclick="submitForm()">Gửi chia sẻ</button>
+    <div class="nav">
+      <button class="btn-back" onclick="goStep(2)">Quay lại</button>
+      <button class="btn" id="submit-btn" onclick="submitForm()">Gửi chia sẻ</button>
+    </div>
+    </div>
     <div class="footer">© 2026 30Shine · Lưu hành nội bộ · Phiếu chia sẻ khi có ý định xin nghỉ</div>
   </div>
 
@@ -239,6 +268,29 @@ const Q7_ROWS = [
 ];
 const Q7_SCALE = ["Có","Lúc có lúc không","Không"];
 const REQUIRED = ["A0","A1","A2","A3","Q1","Q3","Q4","Q5","Q6","Q7","Q9","Q10","Q11","Q12","Q13","Q14"];
+const STEP2_REQ = ["A0","A1","A2","A3"];
+let STEP = 1;
+function goStep(n){
+  if(n===3 && STEP===2){
+    const miss=STEP2_REQ.filter(q=>!answered(q));
+    document.querySelectorAll('#step2 .q').forEach(el=>el.classList.toggle('invalid', miss.includes(el.dataset.qid)));
+    if(miss.length){
+      const names={A0:'Họ và tên',A1:'Mã nhân sự',A2:'Salon',A3:'Vị trí'};
+      const b=document.getElementById('err-box2');
+      b.textContent='Anh/chị/em điền giúp: '+miss.map(m=>names[m]).join(', ');
+      b.classList.remove('hidden');
+      document.querySelector(`#step2 [data-qid="${miss[0]}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    document.getElementById('err-box2').classList.add('hidden');
+  }
+  STEP=n;
+  [1,2,3].forEach(i=>document.getElementById('step'+i).classList.toggle('hidden', i!==n));
+  document.querySelectorAll('#steps .st').forEach(el=>{
+    const i=+el.dataset.s; el.classList.toggle('on', i===n); el.classList.toggle('done', i<n);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
 // ---------- render ----------
 function renderOpts(id, list, type){
@@ -302,9 +354,9 @@ function answered(q){
   }
 }
 function updateProgress(){
-  const n=REQUIRED.filter(answered).length;
-  document.getElementById('pfill').style.width=Math.round(n/REQUIRED.length*100)+'%';
-  document.getElementById('ptxt').textContent=`${n}/${REQUIRED.length} mục bắt buộc`;
+  const n=REQUIRED.filter(answered).length, pct=Math.round(n/REQUIRED.length*100)+'%', txt=`${n}/${REQUIRED.length} mục bắt buộc`;
+  ['pfill','pfill3'].forEach(id=>{const el=document.getElementById(id); if(el) el.style.width=pct;});
+  ['ptxt','ptxt3'].forEach(id=>{const el=document.getElementById(id); if(el) el.textContent=txt;});
 }
 function validateForm(){
   const miss=REQUIRED.filter(q=>!answered(q));
@@ -347,7 +399,8 @@ function submitForm(){
   if(miss.length){
     const names={A0:'Họ tên',A1:'Mã nhân sự',A2:'Salon',A3:'Vị trí'};
     showError(`Còn ${miss.length} mục bắt buộc chưa trả lời: ${miss.slice(0,4).map(m=>names[m]||('câu '+m.replace('Q',''))).join(', ')}${miss.length>4?'...':''}`);
-    document.querySelector(`[data-qid="${miss[0]}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});
+    if(STEP2_REQ.includes(miss[0])) goStep(2);
+    setTimeout(()=>document.querySelector(`[data-qid="${miss[0]}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),150);
     return;
   }
   if(!GOOGLE_SCRIPT_URL){ showError('Phiếu chưa được kết nối nơi nhận dữ liệu. Anh/chị/em báo giúp Bộ phận Tuyển dụng.'); return; }
