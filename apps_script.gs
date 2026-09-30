@@ -34,7 +34,7 @@ const HEADERS = [
   'Q7a_sm_hoi_tham', 'Q7b_sm_giai_thich', 'Q7c_xep_ca_cong_bang', 'Q7_ke_them',
   'Q8_nen_giu', 'Q8_nen_doi',
   // Câu 9–14
-  'Q9_ngay_thong_bao', 'Q9_chua_noi',
+  'Q9_ngay_thong_bao',
   'Q10_ngay_lam_cuoi',
   'Q11_quay_lai', 'Q11_dieu_kien',
   'Q12_gioi_thieu',
@@ -67,7 +67,7 @@ function doPost(e) {
     let sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) { setupSheet(); sheet = ss.getSheetByName(SHEET_NAME); }
 
-    const derived = tinhCachNghi_(data.Q9_ngay_thong_bao, data.Q10_ngay_lam_cuoi, data.Q9_chua_noi);
+    const derived = tinhCachNghi_(data.Q9_ngay_thong_bao, data.Q10_ngay_lam_cuoi);
     const row = HEADERS.map(function (h) {
       if (h === 'submission_id') return Utilities.getUuid();
       if (h === 'timestamp') return data.timestamp || new Date().toISOString();
@@ -92,8 +92,7 @@ function doGet() {
 }
 
 // Số ngày báo trước = ngày làm cuối − ngày thông báo. Quy ước theo từ điển chỉ số F3.
-function tinhCachNghi_(ngayThongBao, ngayLamCuoi, chuaNoi) {
-  if (chuaNoi === 'Có') return { soNgay: '', cachNghi: 'Chưa nói với quản lý' };
+function tinhCachNghi_(ngayThongBao, ngayLamCuoi) {
   if (!ngayThongBao || !ngayLamCuoi) return { soNgay: '', cachNghi: '' };
   const a = new Date(ngayThongBao), b = new Date(ngayLamCuoi);
   if (isNaN(a) || isNaN(b)) return { soNgay: '', cachNghi: '' };
@@ -113,7 +112,7 @@ function testPost() {
     Q6_thu_nhap_cam_nhan: 'Thấp hơn một chút',
     Q7a_sm_hoi_tham: 'Lúc có lúc không', Q7b_sm_giai_thich: 'Không', Q7c_xep_ca_cong_bang: 'Có', Q7_ke_them: '',
     Q8_nen_giu: 'Đào tạo', Q8_nen_doi: 'Cách chia khách',
-    Q9_ngay_thong_bao: '2026-09-25', Q9_chua_noi: '', Q10_ngay_lam_cuoi: '2026-10-05',
+    Q9_ngay_thong_bao: '2026-09-25', Q10_ngay_lam_cuoi: '2026-10-05',
     Q11_quay_lai: 'Có, nếu...', Q11_dieu_kien: 'Về salon gần nhà', Q12_gioi_thieu: 'Tùy chỗ, tùy người',
     Q13_goi_rieng: 'Không', Q14_lien_he_sau: 'Được', Q14_zalo: '0900000000', user_agent: 'test'
   };
