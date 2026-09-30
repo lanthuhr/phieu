@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phiếu chia sẻ trước khi quyết định | 30Shine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --navy:#133880; --navy-dam:#082661; --xanh:#3466c7;
+  --nen-trang:#f4f7fb; --be-mat:#fcfdff; --nen-nhat:#e8f1ff; --nen-nhat-2:#d5e4fe;
+  --chu:#131b29; --chu-phu:#4b5361; --chu-mo:#7a818d; --vien:#dadee6;
+  --tot:#0ca30c; --nguy-cap:#d03b3b;
+  --font:"Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--nen-trang);color:var(--chu);font:15px/1.6 var(--font);-webkit-font-smoothing:antialiased;padding:16px 14px 60px}
+.wrap{max-width:640px;margin:0 auto}
+.dau{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px 14px;border-bottom:3px solid var(--navy);margin-bottom:18px}
+.dau img{height:36px;width:auto}
+.nhan-noi-bo{border:1.5px solid var(--navy);color:var(--navy);padding:1px 8px;font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;white-space:nowrap}
+.card{background:var(--be-mat);border:1px solid var(--vien);border-radius:14px;padding:22px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(19,56,128,.06)}
+h1{font-size:22px;line-height:1.3;color:var(--navy);font-weight:700;margin-bottom:14px;text-wrap:balance}
+.intro p{color:var(--chu-phu);margin-bottom:12px;font-size:14.5px}
+.intro p strong{color:var(--chu)}
+.intro .xin{background:var(--nen-nhat);border-left:4px solid var(--navy);padding:12px 14px;border-radius:0 8px 8px 0;color:var(--chu);margin:14px 0 6px}
+.time-est{display:inline-block;background:var(--nen-nhat);color:var(--navy-dam);padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;margin-top:6px}
+.progress{position:sticky;top:0;z-index:10;background:var(--nen-trang);padding:8px 0 10px;margin-bottom:6px}
+.progress .bar{height:6px;background:var(--nen-nhat-2);border-radius:999px;overflow:hidden}
+.progress .fill{height:100%;width:0;background:var(--xanh);transition:width .2s}
+.progress .txt{font-size:12px;color:var(--chu-mo);margin-top:5px;text-align:right}
+.sec-title{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--chu-mo);margin:6px 0 12px}
+.q{margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--vien)}
+.q:last-of-type{border-bottom:none;margin-bottom:6px;padding-bottom:0}
+.q .lbl{font-weight:600;font-size:15.5px;line-height:1.45;margin-bottom:4px}
+.q .lbl .no{color:var(--navy);margin-right:4px}
+.q .lbl .req{color:var(--nguy-cap);margin-left:3px}
+.q .hint{font-size:13px;color:var(--chu-phu);margin-bottom:10px;font-style:italic}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;border:1.5px solid var(--vien);border-radius:10px;padding:11px 13px;cursor:pointer;background:var(--be-mat);transition:border-color .15s,background .15s;font-size:14.5px;line-height:1.4}
+.opt:hover{border-color:var(--xanh)}
+.opt.selected{border-color:var(--xanh);background:var(--nen-nhat)}
+.opt input{margin-top:3px;accent-color:var(--navy);flex:none;width:17px;height:17px}
+.opt.disabled{opacity:.45;cursor:not-allowed}
+input[type=text],input[type=date],textarea,select{width:100%;font:inherit;font-size:14.5px;padding:10px 12px;border:1.5px solid var(--vien);border-radius:9px;background:var(--be-mat);color:var(--chu)}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--xanh);box-shadow:0 0 0 3px rgba(52,102,199,.15)}
+textarea{min-height:88px;resize:vertical}
+.sub{margin-top:8px}
+.sub label{font-size:13px;color:var(--chu-phu);display:block;margin-bottom:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.grid2{grid-template-columns:1fr}}
+.matrix{display:grid;gap:10px}
+.matrix .row{border:1.5px solid var(--vien);border-radius:10px;padding:10px 12px}
+.matrix .row .t{font-size:14px;margin-bottom:8px;line-height:1.4}
+.matrix .row .c{display:flex;flex-wrap:wrap;gap:6px}
+.matrix .row .c label{display:flex;align-items:center;gap:6px;font-size:13.5px;border:1.5px solid var(--vien);border-radius:999px;padding:5px 11px;cursor:pointer}
+.matrix .row .c label.selected{border-color:var(--xanh);background:var(--nen-nhat)}
+.matrix .row .c input{accent-color:var(--navy)}
+.hidden{display:none!important}
+.err{background:#fdecec;border:1.5px solid var(--nguy-cap);color:#8a1f1f;border-radius:10px;padding:11px 14px;font-size:14px;margin-bottom:14px}
+.btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:11px;padding:15px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--navy-dam)}
+.btn:disabled{opacity:.6;cursor:wait}
+.note-prefill{font-size:12.5px;color:var(--chu-phu);background:var(--nen-nhat);padding:8px 12px;border-radius:8px;margin-bottom:12px}
+.thanks h1{margin-bottom:10px}
+.thanks p{color:var(--chu-phu);margin-bottom:12px;font-size:14.5px}
+.thanks .last{color:var(--navy);font-weight:600;margin-top:16px}
+.footer{text-align:center;font-size:12px;color:var(--chu-mo);margin-top:20px}
+.q.invalid{border-left:3px solid var(--nguy-cap);padding-left:12px;margin-left:-15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="dau">
+    <img src="logo-30shine-xanh.png" alt="30Shine">
+    <span class="nhan-noi-bo">Lưu hành nội bộ</span>
+  </header>
+
+  <div id="form-wrap">
+    <!-- LỜI MỞ ĐẦU -->
+    <section class="card intro">
+      <h1>Đôi lời trước khi anh/chị/em quyết định</h1>
+      <p>Quản lý salon vừa cho biết anh/chị/em đang cân nhắc việc nghỉ. 30Shine tôn trọng lựa chọn của mỗi người. Phiếu này không nhằm giữ chân, cũng không để đánh giá đúng sai. Công ty chỉ mong, trước khi anh/chị/em quyết định, được lắng nghe anh/chị/em một lần, thật lòng.</p>
+      <p>Mỗi tháng, số liệu cho công ty biết có bao nhiêu anh/chị/em rời đi, nhưng không cho biết vì sao, và mỗi người đã trải qua điều gì ở salon. Điều đó chỉ anh/chị/em mới nói được. Những chia sẻ hôm nay chính là điều giúp những người đang ở lại, và những bạn sắp vào, có một môi trường làm việc tốt hơn.</p>
+      <p>Anh/chị/em có thể yên tâm: phiếu này <strong>không được chuyển tới quản lý salon</strong>. Người đọc là bộ phận ở công ty, ngoài salon, và khi tổng hợp để cải tiến sẽ không ghi tên ai. Phiếu cũng không ảnh hưởng tới lương, quyết toán, hay việc anh/chị/em quay lại 30Shine sau này.</p>
+      <div class="xin">Công ty chỉ mong một điều: anh/chị/em kể đúng như những gì đã diễn ra. Không cần nói nặng hơn, cũng không cần trả lời cho xong. Chia sẻ càng chân thật và cụ thể, công ty càng biết cần bắt đầu sửa từ đâu.</div>
+      <p>Cảm ơn anh/chị/em đã dành thời gian.</p>
+      <span class="time-est">14 câu · khoảng 4 phút</span>
+    </section>
+
+    <div class="progress"><div class="bar"><div class="fill" id="pfill"></div></div><div class="txt" id="ptxt">0/14 câu bắt buộc</div></div>
+
+    <!-- THÔNG TIN -->
+    <section class="card">
+      <div class="sec-title">Thông tin của anh/chị/em</div>
+      <div id="prefill-note" class="note-prefill hidden">Thông tin dưới đây do hệ thống điền sẵn. Nếu sai, anh/chị/em sửa lại giúp.</div>
+      <div class="q" data-qid="A0"><div class="lbl">Họ và tên<span class="req">*</span></div><input type="text" id="A0" autocomplete="name" placeholder="Nguyễn Văn A"></div>
+      <div class="q" data-qid="A1"><div class="lbl">Mã nhân sự<span class="req">*</span></div><input type="text" id="A1" placeholder="VD: 30S12345"></div>
+      <div class="q" data-qid="A2"><div class="lbl">Salon đang làm<span class="req">*</span></div>
+        <select id="A2"><option value="">— Chọn salon —</option></select>
+        <div class="sub hidden" id="A2-other-wrap"><label>Tên salon</label><input type="text" id="A2_other" placeholder="Ghi tên salon"></div>
+      </div>
+      <div class="q" data-qid="A3"><div class="lbl">Vị trí<span class="req">*</span></div>
+        <div class="opts" id="A3"></div>
+      </div>
+    </section>
+
+    <!-- CÂU HỎI -->
+    <section class="card">
+      <div class="sec-title">Chia sẻ của anh/chị/em</div>
+
+      <div class="q" data-qid="Q1">
+        <div class="lbl"><span class="no">1.</span>Trong khoảng 3 tháng gần đây, có chuyện gì thay đổi khiến anh em bắt đầu nghĩ tới việc nghỉ?<span class="req">*</span></div>
+        <div class="hint">Chọn tối đa 2 điều đúng nhất. Nếu có lý do khác, cứ viết vào.</div>
+        <div class="opts" id="Q1"></div>
+        <div class="sub hidden" id="Q1-other-wrap"><label>Chuyện khác</label><input type="text" id="Q1_khac" placeholder="Kể cho công ty nghe"></div>
+      </div>
+
+      <div class="q" data-qid="Q2">
+        <div class="lbl"><span class="no">2.</span>Kể cụ thể hơn một chút: chuyện đó là gì, xảy ra từ khi nào?</div>
+        <div class="hint">Không bắt buộc. Nhưng đây là phần giúp công ty hiểu đúng nhất.</div>
+        <textarea id="Q2" placeholder="Ví dụ: từ tháng 7, khách của mình bị chia sang bạn mới..."></textarea>
+      </div>
+
+      <div class="q" data-qid="Q3">
+        <div class="lbl"><span class="no">3.</span>Nếu 30Shine chỉ sửa được MỘT việc để anh em ở lại, anh em muốn đó là việc gì?<span class="req">*</span></div>
+        <div class="hint">Cứ nói thẳng, kể cả anh em nghĩ là khó. Càng cụ thể càng tốt: "được xếp ca cố định thứ Bảy" dễ làm hơn "ca kíp hợp lý hơn".</div>
+        <textarea id="Q3" placeholder="Một việc cụ thể..."></textarea>
+      </div>
+
+      <div class="q" data-qid="Q4">
+        <div class="lbl"><span class="no">4.</span>Nếu việc đó được giải quyết, anh em có cân nhắc ở lại không?<span class="req">*</span></div>
+        <div class="opts" id="Q4"></div>
+      </div>
+
+      <div class="q" data-qid="Q5">
+        <div class="lbl"><span class="no">5.</span>Sau khi nghỉ, anh em dự định làm gì?<span class="req">*</span></div>
+        <div class="hint">Chưa chắc cũng không sao, chọn cái gần nhất với suy nghĩ hiện tại.</div>
+        <div class="opts" id="Q5"></div>
+      </div>
+
+      <div class="q" data-qid="Q6">
+        <div class="lbl"><span class="no">6.</span>Thu nhập 3 tháng gần đây của anh em, so với người cùng bậc ở salon, anh em thấy thế nào?<span class="req">*</span></div>
+        <div class="opts" id="Q6"></div>
+      </div>
+
+      <div class="q" data-qid="Q7">
+        <div class="lbl"><span class="no">7.</span>Trong 6 tháng qua ở salon, ba việc này có đúng với anh em không?<span class="req">*</span></div>
+        <div class="hint">Trả lời theo chuyện đã xảy ra, không cần chấm điểm.</div>
+        <div class="matrix" id="Q7"></div>
+        <div class="sub"><label>Nếu có chuyện cụ thể anh em muốn kể thêm về salon</label><input type="text" id="Q7_ke_them" placeholder="Không bắt buộc"></div>
+      </div>
+
+      <div class="q" data-qid="Q8">
+        <div class="lbl"><span class="no">8.</span>Một điều 30Shine NÊN GIỮ, và một điều NÊN THAY ĐỔI?</div>
+        <div class="hint">Không bắt buộc. Anh em là người nhìn thấy salon từ bên trong, công ty không có góc nhìn đó.</div>
+        <div class="grid2">
+          <div class="sub"><label>Nên giữ</label><input type="text" id="Q8_nen_giu"></div>
+          <div class="sub"><label>Nên thay đổi</label><input type="text" id="Q8_nen_doi"></div>
+        </div>
+      </div>
+
+      <div class="q" data-qid="Q9">
+        <div class="lbl"><span class="no">9.</span>Anh em đã nói với quản lý salon về ý định nghỉ vào ngày nào?<span class="req">*</span></div>
+        <div class="hint">Không nhớ chính xác thì ghi ngày gần đúng.</div>
+        <input type="date" id="Q9">
+        <div class="opts" style="margin-top:10px">
+          <label class="opt"><input type="checkbox" id="Q9_chua_noi"><span>Mình chưa chính thức nói với quản lý</span></label>
+        </div>
+      </div>
+
+      <div class="q" data-qid="Q10">
+        <div class="lbl"><span class="no">10.</span>Anh em mong ngày làm cuối là ngày nào?<span class="req">*</span></div>
+        <input type="date" id="Q10">
+      </div>
+
+      <div class="q" data-qid="Q11">
+        <div class="lbl"><span class="no">11.</span>Sau này, anh em có sẵn sàng quay lại 30Shine không?<span class="req">*</span></div>
+        <div class="opts" id="Q11"></div>
+        <div class="sub hidden" id="Q11-cond-wrap"><label>Có, nếu...</label><input type="text" id="Q11_dieu_kien" placeholder="Điều kiện để anh em quay lại"></div>
+      </div>
+
+      <div class="q" data-qid="Q12">
+        <div class="lbl"><span class="no">12.</span>Anh em có sẵn sàng giới thiệu bạn bè, người thân vào làm 30Shine không?<span class="req">*</span></div>
+        <div class="opts" id="Q12"></div>
+      </div>
+
+      <div class="q" data-qid="Q13">
+        <div class="lbl"><span class="no">13.</span>Có chuyện gì anh em muốn kể riêng qua điện thoại với người của công ty, ngoài salon, không?<span class="req">*</span></div>
+        <div class="hint">Ví dụ chuyện anh em thấy không đúng ở salon mà chưa biết nói với ai. Người gọi không phải quản lý salon hay quản lý khu vực.</div>
+        <div class="opts" id="Q13"></div>
+      </div>
+
+      <div class="q" data-qid="Q14">
+        <div class="lbl"><span class="no">14.</span>Sau khi anh em nghỉ, 30Shine nhắn hỏi thăm một lần qua Zalo được không?<span class="req">*</span></div>
+        <div class="hint">Chỉ một lần, để hỏi anh em ổn chưa và chỗ mới thế nào.</div>
+        <div class="opts" id="Q14"></div>
+        <div class="sub hidden" id="Q14-zalo-wrap"><label>Số Zalo anh em dùng lâu dài (nếu khác số hiện tại)</label><input type="text" id="Q14_zalo" inputmode="tel" placeholder="09xx xxx xxx"></div>
+      </div>
+    </section>
+
+    <div id="err-box" class="err hidden"></div>
+    <button class="btn" id="submit-btn" onclick="submitForm()">Gửi chia sẻ</button>
+    <div class="footer">© 2026 30Shine · Lưu hành nội bộ · Phiếu chia sẻ khi có ý định xin nghỉ</div>
+  </div>
+
+  <!-- CẢM ƠN -->
+  <section class="card thanks hidden" id="thanks">
+    <h1>Cảm ơn anh/chị/em</h1>
+    <p>Cảm ơn anh/chị/em đã chia sẻ thẳng thắn. Những điều anh/chị/em vừa viết có ý nghĩa hơn nhiều so với một phiếu thông thường.</p>
+    <p>Trong vài ngày tới, có thể sẽ có người ở công ty (không phải quản lý salon) liên hệ để lắng nghe anh/chị/em kỹ hơn, nếu anh/chị/em không phiền. Riêng những ai đã chọn "gọi cho mình" ở câu 13, chắc chắn sẽ có người liên hệ riêng.</p>
+    <p>Khi công ty thay đổi được điều gì từ những chia sẻ như thế này, công ty sẽ nhắn để anh/chị/em biết, dù khi đó anh/chị/em còn ở 30Shine hay không.</p>
+    <p class="last">Cánh cửa 30Shine luôn mở. Dù ở lại hay bước tiếp chặng đường mới, chúc anh/chị/em nhiều sức khỏe và thành công.</p>
+  </section>
+</div>
+
+<script>
+// ============================================================
+// !!! DÁN URL APPS SCRIPT SAU KHI TRIỂN KHAI (xem HUONG_DAN.md) !!!
+// ============================================================
+const GOOGLE_SCRIPT_URL = '';
+
+// Danh sách salon: sửa trực tiếp mảng này khi có thay đổi
+const SALONS = ["10 TP","11 PKT","168 NVC","186 QT","362 NGT BN","4 LQD BN","145 THT","190 HB","312 LVS","575 AC","708 LTT","730 TL10","8 CVL","927 HG","99 TSN","290 QT TH","304 NT TH","58 NVC NA","595 BT TH","68 LN NA","80 TP TH","103 TN","1146 KVC","1371 PVT","255 NAN","29 HB","36 N1 BD","401/1 NDT","451 PVT","80 PL BD","148 TD","173 TN","202 DC","264 LLQ","346 KT","363 LNQ TN","39 HBT","50BT4 NPC LD","1180 QT","12 LDT","32 NAT","483 TN","76 PVH","113 THD AG","186 DTH","236 DBT","237 NTT","25 TD","341 XVNT","420 HTP","7 DTP LA","109 TQH","116 TK","382 NT","55A NVL","62 LH","65 CD","90 NH"];
+
+const OPTS = {
+  A3: ["Stylist","Skinner","Supporter","Quản lý salon","Khác"],
+  Q1: ["Thu nhập không như mình mong","Khách ít, ngày công không đủ","Mãi chưa lên được bậc, không thấy đường đi tiếp","Ca làm, giờ giấc, ngày nghỉ khó sắp xếp","Áp lực chỉ tiêu, làm nhiều mà mệt","Chuyện với quản lý salon","Chuyện với anh em trong salon","Chuyện với quản lý khu vực","Sức khỏe, cần nghỉ ngơi","Chuyện gia đình, chuyển chỗ ở, về quê","Muốn thử nghề khác hoặc đi học tiếp","Muốn tự mở tiệm","Có chỗ khác mời","Chuyện khác"],
+  Q4: ["Có, mình sẽ ở lại","Có thể, còn tùy cách giải quyết","Mình đã quyết rồi, nhưng vẫn muốn công ty biết"],
+  Q5: ["Sang một salon hoặc tiệm khác","Tự mở tiệm","Làm nghề khác","Về quê","Đi học thêm","Nghỉ ngơi một thời gian rồi tính","Chưa biết"],
+  Q6: ["Thấp hơn nhiều","Thấp hơn một chút","Ngang nhau","Cao hơn một chút","Cao hơn nhiều","Mình không rõ người khác được bao nhiêu"],
+  Q11: ["Có","Có, nếu...","Chắc là không"],
+  Q12: ["Có","Tùy chỗ, tùy người","Không"],
+  Q13: ["Có, gọi cho mình","Không"],
+  Q14: ["Được","Thôi"]
+};
+const Q7_ROWS = [
+  ["Q7a_sm_hoi_tham","Khi mình giảm khách hoặc có chuyện, quản lý salon có hỏi thăm, hỗ trợ"],
+  ["Q7b_sm_giai_thich","Quản lý salon giải thích rõ cách tính thu nhập của mình"],
+  ["Q7c_xep_ca_cong_bang","Ca làm và ngày nghỉ được xếp công bằng"]
+];
+const Q7_SCALE = ["Có","Lúc có lúc không","Không"];
+const REQUIRED = ["A0","A1","A2","A3","Q1","Q3","Q4","Q5","Q6","Q7","Q9","Q10","Q11","Q12","Q13","Q14"];
+
+// ---------- render ----------
+function renderOpts(id, list, type){
+  const host = document.getElementById(id);
+  host.innerHTML = list.map(v => `<label class="opt"><input type="${type}" name="${id}" value="${v}"><span>${v}</span></label>`).join('');
+}
+(function init(){
+  const sel = document.getElementById('A2');
+  SALONS.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
+  const o=document.createElement('option'); o.value='Khác'; o.textContent='Khác / không thấy salon của mình'; sel.appendChild(o);
+  renderOpts('A3', OPTS.A3, 'radio');
+  renderOpts('Q1', OPTS.Q1, 'checkbox');
+  ['Q4','Q5','Q6','Q11','Q12','Q13','Q14'].forEach(k => renderOpts(k, OPTS[k], 'radio'));
+  document.getElementById('Q7').innerHTML = Q7_ROWS.map(([k,t]) => `<div class="row"><div class="t">${t}</div><div class="c">${Q7_SCALE.map(v=>`<label><input type="radio" name="${k}" value="${v}">${v}</label>`).join('')}</div></div>`).join('');
+  prefillFromUrl();
+  updateProgress();
+})();
+
+// Điền sẵn từ đường link: ?ten=...&ma=...&salon=...&vitri=...
+let PREFILL = 'manual';
+function prefillFromUrl(){
+  const p = new URLSearchParams(location.search);
+  const ten=p.get('ten'), ma=p.get('ma'), salon=p.get('salon'), vitri=p.get('vitri');
+  if(!(ten||ma||salon||vitri)) return;
+  PREFILL='url';
+  if(ten) document.getElementById('A0').value=ten;
+  if(ma) document.getElementById('A1').value=ma;
+  if(salon){ const sel=document.getElementById('A2'); if([...sel.options].some(o=>o.value===salon)) sel.value=salon; else { sel.value='Khác'; document.getElementById('A2-other-wrap').classList.remove('hidden'); document.getElementById('A2_other').value=salon; } }
+  if(vitri){ const r=document.querySelector(`input[name="A3"][value="${vitri}"]`); if(r){ r.checked=true; r.closest('.opt').classList.add('selected'); } }
+  document.getElementById('prefill-note').classList.remove('hidden');
+}
+
+// ---------- tương tác ----------
+document.addEventListener('change', e => {
+  const t=e.target;
+  if(t.type==='radio'){
+    document.querySelectorAll(`input[name="${t.name}"]`).forEach(el=>{ const w=el.closest('.opt')||el.closest('label'); w&&w.classList.toggle('selected',el.checked); });
+  } else if(t.type==='checkbox'){ t.closest('.opt')?.classList.toggle('selected',t.checked); }
+
+  if(t.name==='Q1'){
+    const checked=[...document.querySelectorAll('input[name="Q1"]:checked')];
+    document.querySelectorAll('input[name="Q1"]').forEach(el=>{ const dis=checked.length>=2&&!el.checked; el.disabled=dis; el.closest('.opt').classList.toggle('disabled',dis); });
+    document.getElementById('Q1-other-wrap').classList.toggle('hidden', !checked.some(c=>c.value==='Chuyện khác'));
+  }
+  if(t.id==='A2') document.getElementById('A2-other-wrap').classList.toggle('hidden', t.value!=='Khác');
+  if(t.name==='Q11') document.getElementById('Q11-cond-wrap').classList.toggle('hidden', t.value!=='Có, nếu...');
+  if(t.name==='Q14') document.getElementById('Q14-zalo-wrap').classList.toggle('hidden', t.value!=='Được');
+  if(t.id==='Q9_chua_noi'){ const d=document.getElementById('Q9'); d.disabled=t.checked; if(t.checked) d.value=''; }
+  updateProgress();
+});
+document.addEventListener('input', e => { if(['A0','A1','Q3'].includes(e.target.id)) updateProgress(); });
+
+const val = id => (document.getElementById(id)?.value||'').trim();
+const radio = name => document.querySelector(`input[name="${name}"]:checked`)?.value||'';
+function answered(q){
+  switch(q){
+    case 'A0': case 'A1': case 'Q3': case 'Q10': return !!val(q);
+    case 'A2': return !!val('A2') && (val('A2')!=='Khác' || !!val('A2_other'));
+    case 'Q1': return document.querySelectorAll('input[name="Q1"]:checked').length>0;
+    case 'Q7': return Q7_ROWS.every(([k])=>!!radio(k));
+    case 'Q9': return !!val('Q9') || document.getElementById('Q9_chua_noi').checked;
+    default: return !!radio(q);
+  }
+}
+function updateProgress(){
+  const n=REQUIRED.filter(answered).length;
+  document.getElementById('pfill').style.width=Math.round(n/REQUIRED.length*100)+'%';
+  document.getElementById('ptxt').textContent=`${n}/${REQUIRED.length} câu bắt buộc`;
+}
+function validateForm(){
+  const miss=REQUIRED.filter(q=>!answered(q));
+  document.querySelectorAll('.q').forEach(el=>el.classList.toggle('invalid', miss.includes(el.dataset.qid)));
+  return miss;
+}
+function showError(msg){ const b=document.getElementById('err-box'); b.textContent=msg; b.classList.remove('hidden'); }
+
+// ---------- dữ liệu ----------
+function collectFormData(){
+  const q1=[...document.querySelectorAll('input[name="Q1"]:checked')].map(c=>c.value);
+  const tz=new Date();
+  return {
+    timestamp: tz.toISOString(),
+    ngay_gui: tz.toLocaleDateString('vi-VN'),
+    prefill: PREFILL,
+    A0_ho_ten: val('A0'), A1_ma_nv: val('A1'),
+    A2_salon: val('A2')==='Khác' ? val('A2_other') : val('A2'),
+    A3_vi_tri: radio('A3'),
+    Q1_ly_do: q1.join('; '), Q1_khac: val('Q1_khac'),
+    Q2_ke_them: val('Q2'),
+    Q3_dieu_giu_lai: val('Q3'),
+    Q4_kha_nang_o_lai: radio('Q4'),
+    Q5_diem_den: radio('Q5'),
+    Q6_thu_nhap_cam_nhan: radio('Q6'),
+    Q7a_sm_hoi_tham: radio('Q7a_sm_hoi_tham'), Q7b_sm_giai_thich: radio('Q7b_sm_giai_thich'), Q7c_xep_ca_cong_bang: radio('Q7c_xep_ca_cong_bang'),
+    Q7_ke_them: val('Q7_ke_them'),
+    Q8_nen_giu: val('Q8_nen_giu'), Q8_nen_doi: val('Q8_nen_doi'),
+    Q9_ngay_thong_bao: val('Q9'), Q9_chua_noi: document.getElementById('Q9_chua_noi').checked ? 'Có' : '',
+    Q10_ngay_lam_cuoi: val('Q10'),
+    Q11_quay_lai: radio('Q11'), Q11_dieu_kien: val('Q11_dieu_kien'),
+    Q12_gioi_thieu: radio('Q12'),
+    Q13_goi_rieng: radio('Q13'),
+    Q14_lien_he_sau: radio('Q14'), Q14_zalo: val('Q14_zalo'),
+    user_agent: navigator.userAgent.slice(0,120)
+  };
+}
+function submitForm(){
+  const miss=validateForm();
+  if(miss.length){
+    const names={A0:'Họ tên',A1:'Mã nhân sự',A2:'Salon',A3:'Vị trí'};
+    showError(`Còn ${miss.length} mục bắt buộc chưa trả lời: ${miss.slice(0,4).map(m=>names[m]||('câu '+m.replace('Q',''))).join(', ')}${miss.length>4?'...':''}`);
+    document.querySelector(`[data-qid="${miss[0]}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(!GOOGLE_SCRIPT_URL){ showError('Phiếu chưa được kết nối nơi nhận dữ liệu. Anh/chị/em báo giúp Bộ phận Tuyển dụng.'); return; }
+  const btn=document.getElementById('submit-btn'); btn.disabled=true; btn.textContent='Đang gửi...';
+  document.getElementById('err-box').classList.add('hidden');
+  fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(collectFormData())})
+    .then(()=>{ document.getElementById('form-wrap').classList.add('hidden'); document.getElementById('thanks').classList.remove('hidden'); window.scrollTo(0,0); })
+    .catch(err=>{ btn.disabled=false; btn.textContent='Gửi chia sẻ'; showError('Gửi chưa thành công: '+err.message+'. Anh/chị/em thử lại sau ít phút.'); });
+}
+</script>
+</body>
+</html>
