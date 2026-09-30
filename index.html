@@ -90,7 +90,7 @@ textarea{min-height:88px;resize:vertical}
       <span class="time-est">14 câu · khoảng 4 phút</span>
     </section>
 
-    <div class="progress"><div class="bar"><div class="fill" id="pfill"></div></div><div class="txt" id="ptxt">0/14 câu bắt buộc</div></div>
+    <div class="progress"><div class="bar"><div class="fill" id="pfill"></div></div><div class="txt" id="ptxt">0/16 mục bắt buộc</div></div>
 
     <!-- THÔNG TIN -->
     <section class="card">
@@ -249,7 +249,7 @@ function renderOpts(id, list, type){
   const host = document.getElementById(id);
   host.innerHTML = list.map(v => `<label class="opt"><input type="${type}" name="${id}" value="${v}"><span>${v}</span></label>`).join('');
 }
-(function init(){
+function init(){
   const sel = document.getElementById('A2');
   SALONS.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
   const o=document.createElement('option'); o.value='Khác'; o.textContent='Khác / không thấy salon của mình'; sel.appendChild(o);
@@ -259,7 +259,7 @@ function renderOpts(id, list, type){
   document.getElementById('Q7').innerHTML = Q7_ROWS.map(([k,t]) => `<div class="row"><div class="t">${t}</div><div class="c">${Q7_SCALE.map(v=>`<label><input type="radio" name="${k}" value="${v}">${v}</label>`).join('')}</div></div>`).join('');
   prefillFromUrl();
   updateProgress();
-})();
+}
 
 // Điền sẵn từ đường link: ?ten=...&ma=...&salon=...&vitri=...
 let PREFILL = 'manual';
@@ -310,7 +310,7 @@ function answered(q){
 function updateProgress(){
   const n=REQUIRED.filter(answered).length;
   document.getElementById('pfill').style.width=Math.round(n/REQUIRED.length*100)+'%';
-  document.getElementById('ptxt').textContent=`${n}/${REQUIRED.length} câu bắt buộc`;
+  document.getElementById('ptxt').textContent=`${n}/${REQUIRED.length} mục bắt buộc`;
 }
 function validateForm(){
   const miss=REQUIRED.filter(q=>!answered(q));
@@ -363,6 +363,7 @@ function submitForm(){
     .then(()=>{ document.getElementById('form-wrap').classList.add('hidden'); document.getElementById('thanks').classList.remove('hidden'); window.scrollTo(0,0); })
     .catch(err=>{ btn.disabled=false; btn.textContent='Gửi chia sẻ'; showError('Gửi chưa thành công: '+err.message+'. Anh/chị/em thử lại sau ít phút.'); });
 }
+init();
 </script>
 </body>
 </html>
